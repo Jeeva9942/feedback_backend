@@ -10,7 +10,7 @@ if (dns.setDefaultResultOrder) {
 const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
 /**
  * Robust fetch wrapper that adds timeouts and detailed logging
@@ -48,29 +48,8 @@ const clientOptions = {
     auth: { persistSession: false }
 };
 
-// Use the standard anon/publishable key for the generic client
+// Both clients use the service role key for full admin access
 const supabase = createClient(supabaseUrl, supabaseKey, clientOptions);
-
-// Use the service role secret key for admin privileges (bypassing RLS if needed)
-const supabaseAdmin = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_KEY, clientOptions);
-
-/**
- * Connectivity test on start-up
- */
-async function testConnectionOnStartup() {
-    try {
-        console.log(`[CONN TEST] Verifying Supabase at ${supabaseUrl}...`);
-        const { data, error } = await supabaseAdmin.from('all_students').select('count', { count: 'exact', head: true });
-        if (error) {
-            console.error(`[CONN TEST FAILED] Database responded with error: ${error.message}`);
-        } else {
-            console.log(`[CONN TEST OK] Successfully reached Supabase. Table "all_students" is accessible.`);
-        }
-    } catch (err) {
-        console.error(`[CONN TEST CRITICAL ERROR] ${err.message}`);
-    }
-}
-
-testConnectionOnStartup();
+const supabaseAdmin = createClient(supabaseUrl, supabaseKey, clientOptions);
 
 module.exports = { supabase, supabaseAdmin };
