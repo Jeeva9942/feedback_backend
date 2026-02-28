@@ -38,11 +38,16 @@ app.use('/api', apiRoutes);
 
 // Health Check
 app.get('/', (req, res) => {
-    res.send('Server is running and connected to Supabase.');
+    res.json({ message: 'NPTC Feedback Backend is running ✅' });
 });
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-    console.log('Using MVC structure with controllers and models connected to Supabase');
-});
+// Start Server (only in local dev — Vercel uses the exported app)
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+        console.log('Using MVC structure with controllers and models connected to Supabase');
+    });
+}
+
+// CRITICAL: Export for Vercel serverless
+module.exports = app;
