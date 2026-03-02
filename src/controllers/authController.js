@@ -57,7 +57,7 @@ const login = async (req, res) => {
                 }
             });
         } else if (role === 'admin') {
-            if (username === 'admin' && password === 'admin123') {
+            if (username === 'admin' && password === 'IQAC@nptc') {
                 return res.status(200).json({
                     user: { role: 'admin', username: 'admin' }
                 });

@@ -6,9 +6,14 @@ if (dns.setDefaultResultOrder) {
 const express = require('express');
 const cors = require('cors');
 const apiRoutes = require('./routes/apiRoutes');
+const { globalLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Trust first proxy hop so req.ip correctly reflects the real client IP
+// (Required for Vercel / nginx deployments)
+app.set('trust proxy', 1);
 
 // CORS — allow frontend origins
 const allowedOrigins = [
@@ -33,7 +38,11 @@ app.use(cors({
 
 app.use(express.json()); // Built-in parsing for JSON body
 
-// Routes
+// ── Rate limiting ────────────────────────────────────────────
+// Global ceiling: 100 req / 15 min per user — applied before all routes
+app.use('/api', globalLimiter);
+
+// ── Routes ───────────────────────────────────────────────────
 app.use('/api', apiRoutes);
 
 // Health Check
