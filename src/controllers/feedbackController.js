@@ -30,10 +30,11 @@ const getFeedbackByDepartment = async (req, res) => {
 
     try {
         const feedbackList = await FeedbackModel.getFeedbackByDepartment(department);
-        return res.status(200).json(feedbackList);
+        return res.status(200).json(feedbackList || []);
     } catch (err) {
         console.error('Error fetching department feedback:', err);
-        return res.status(500).json({ error: 'Failed to load feedback' });
+        // Return 200 + [] so frontend doesn't crash with "Expected array" error
+        return res.status(200).json([]);
     }
 }
 

@@ -18,11 +18,24 @@ class FeedbackModel {
      *
      * This reduces the time from ~20s → ~1-2s.
      */
+    static getTableName(department) {
+        const d = (department || '').toUpperCase().trim();
+        const map = {
+            'MC': 'mcs_feedback',
+            'PT': 'pt_feedback',
+            'MECH_AIDED': 'mech_aided_feedback',
+            'MECH_SF': 'mechanical_sf_feedback',
+            'RAC': 'rac_feedback',
+            'R&AC': 'rac_feedback',
+        };
+        return map[d] || `${d.toLowerCase()}_feedback`;
+    }
+
     static async incrementDepartmentFeedbackCounters(department, answers) {
         if (!department || !answers || !Array.isArray(answers)) return;
         checkDb();
 
-        const tableName = `${department.toLowerCase()}_feedback`;
+        const tableName = this.getTableName(department);
         const now = new Date().toISOString();
 
         // Build a map: code → ratingCol for all answers
@@ -92,11 +105,18 @@ class FeedbackModel {
     static async getFeedbackByDepartment(department) {
         checkDb();
         const tableName = department && department !== 'ALL'
-            ? `${department.toLowerCase()}_feedback`
+            ? this.getTableName(department)
             : 'ct_feedback';
 
         const { data, error } = await supabaseAdmin.from(tableName).select('*');
-        if (error) throw new Error(`Database Fetch Error: ${error.message}`);
+        if (error) {
+            // Log for debugging but don't crash if it's just a missing table
+            if (error.code === '42P01') {
+                console.warn(`[BACKEND] Table ${tableName} not found.`);
+                return [];
+            }
+            throw new Error(`Database Fetch Error: ${error.message}`);
+        }
         return data || [];
     }
 }
