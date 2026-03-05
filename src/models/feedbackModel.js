@@ -21,13 +21,32 @@ class FeedbackModel {
     static getTableName(department) {
         const d = (department || '').toUpperCase().trim();
         const map = {
-            'MC': 'mcs_feedback',
-            'PT': 'pt_feedback',
+            // Circuit
+            'ECE': 'ece_aided_feedback',
+            'ECE_AIDED': 'ece_aided_feedback',
+            'ECE_SF': 'ece_sf_feedback',
+            'EEE': 'eee_aided_feedback',
+            'EEE_AIDED': 'eee_aided_feedback',
+            'EEE_SF': 'eee_sf_feedback',
+
+            // Mechanical & Variants
+            'ME': 'mech_aided_feedback',
             'MECH_AIDED': 'mech_aided_feedback',
             'MECH_SF': 'mechanical_sf_feedback',
+            'MES': 'mes_feedback',
+
+            // Automobile
+            'AE': 'automobile_aided_feedback',
+            'AUTO_AIDED': 'automobile_aided_feedback',
+            'AUTO_SF': 'automobile_sf_feedback',
+
+            // Others with specific names
+            'MC': 'mcs_feedback',
+            'MCS': 'mcs_feedback',
             'RAC': 'rac_feedback',
             'R&AC': 'rac_feedback',
         };
+        // Default to [dept]_feedback if not in map (works for CE, CT, TT, PT, CCN)
         return map[d] || `${d.toLowerCase()}_feedback`;
     }
 
