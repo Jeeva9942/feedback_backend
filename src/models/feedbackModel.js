@@ -33,7 +33,9 @@ class FeedbackModel {
             'ME': 'mech_aided_feedback',
             'MECH_AIDED': 'mech_aided_feedback',
             'MECH_SF': 'mechanical_sf_feedback',
-            'MES': 'mcs_feedback', // Shared table for Mechatronics & Mechanical Sandwich
+            'MES': 'mes_feedback',
+            'MSW': 'mes_feedback',
+            'MS': 'mes_feedback', // Mechanical Sandwich (e.g. 23MS01)
 
             // Automobile
             'AE': 'automobile_aided_feedback',
@@ -42,7 +44,8 @@ class FeedbackModel {
 
             // Others with specific names
             'MC': 'mcs_feedback',
-            'MCS': 'mcs_feedback',
+            'MSC': 'mcs_feedback',
+            'MCS': 'mcs_feedback', // Mechatronics (e.g. 23MCS01)
             'RAC': 'rac_feedback',
             'R&AC': 'rac_feedback',
         };
